@@ -142,7 +142,6 @@ class ItemGroup extends ItemComposite {
 		} else {
 			$("#" + this.getId() + "-a").html(this.nombre)
 		}
-		console.log($("#" + this.getId() + "-a").html());
 	}
 }
 
