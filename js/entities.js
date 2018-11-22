@@ -4,18 +4,24 @@
 Class Capa
 ******************************************/
 class Capa {
-	constructor(nombre, titulo, srs, host, servicio, minx, maxx, miny, maxy, attribution) {
+	constructor(nombre, titulo, srs, host, servicio, version, minx, maxx, miny, maxy, attribution) {
 		this.nombre = nombre
 		this.titulo = titulo
 		this.srs = srs
 		this.host = host
 		this.servicio = servicio
+		this.version = version
 		this.minx = minx
 		this.maxx = maxx
 		this.miny = miny
 		this.maxy = maxy
 		this.attribution = attribution
 	}
+	
+	getLegendURL() {
+		return this.host + '/ows?service=' + this.servicio + '&version=' + this.version + '&request=GetCapabilities';
+	}
+	
 }
 
 /******************************************
@@ -33,7 +39,8 @@ class ImpresorItemHTML extends Impresor {
 		var childId = itemComposite.getId();
 		
 		return "<li id='" + childId + "' class='capa list-group-item' onClick='gestorMenu.muestraCapa(\"" + childId + "\")'><a nombre=" + itemComposite.nombre +
-			" href='#' data-toggle2='tooltip' title='" + itemComposite.descripcion + "'>" + (itemComposite.titulo ? itemComposite.titulo.replace(/_/g, " ") : "por favor ingrese un nombre") + "</a></li>"; // Replace all "_" with a " "
+			" href='#' data-toggle2='tooltip' title='" + itemComposite.descripcion + "'>" + (itemComposite.titulo ? itemComposite.titulo.replace(/_/g, " ") : "por favor ingrese un nombre") + "</a>" + 
+			" </li>"; // Replace all "_" with a " "
 			
 	}
 }
@@ -70,6 +77,10 @@ class ItemComposite {
 
 	imprimir() {
 		return this.impresor.imprimir(this);
+	}
+	
+	getLegendURL() {
+		return '';
 	}
 }
 
@@ -140,13 +151,16 @@ class Item extends ItemComposite {
 		this.capa = capa;
 		this.visible = false;
 	}
+	
 	getId() {
 		var childId = "child-" + this.seccion;
 		return childId;
 	}
+	
 	getVisible() {
 		return this.visible;
 	}
+	
 	showHide(callback) {
 		$('#' + this.getId()).toggleClass('active');
 		if (typeof callback === "function") {
@@ -158,6 +172,11 @@ class Item extends ItemComposite {
 		}
 		this.visible = !this.visible;
 	}
+	
+	getLegendURL() {
+		return this.capa.getLegendURL();
+	}
+	
 }
 
 /******************************************
