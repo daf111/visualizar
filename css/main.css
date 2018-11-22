@@ -74,4 +74,7 @@ Menu principal
 	.legend-layer {
 		display: none;
 	}
+	.tooltip {
+		display: none !important;
+	}
 }
