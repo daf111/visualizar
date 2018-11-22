@@ -57,3 +57,21 @@ Menu principal
 	border-radius: 50%;
 	background: #33b560;
 }
+.legend-layer {
+	height: 20px;
+	width: 20px;
+	display: table-cell;
+	font-size: 10px;
+	font-weight: bolder;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 50%;
+	background: #33b560;
+	float: right;
+	padding-top: 2px;
+}
+@media (max-width: 390px) {
+	.legend-layer {
+		display: none;
+	}
+}

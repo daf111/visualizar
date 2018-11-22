@@ -19,7 +19,9 @@ class Capa {
 	}
 	
 	getLegendURL() {
-		return this.host + '/ows?service=' + this.servicio + '&version=' + this.version + '&request=GetCapabilities';
+		return this.host + 
+			   '/ows?service=' + this.servicio + '&version=' + this.version + '&request=GetLegendGraphic&' +
+			   'format=image/png&layer=' + this.nombre;
 	}
 	
 }
@@ -40,7 +42,7 @@ class ImpresorItemHTML extends Impresor {
 		
 		return "<li id='" + childId + "' class='capa list-group-item' onClick='gestorMenu.muestraCapa(\"" + childId + "\")'><a nombre=" + itemComposite.nombre +
 			" href='#' data-toggle2='tooltip' title='" + itemComposite.descripcion + "'>" + (itemComposite.titulo ? itemComposite.titulo.replace(/_/g, " ") : "por favor ingrese un nombre") + "</a>" + 
-			" </li>"; // Replace all "_" with a " "
+			" <a href='#' data-toggle2='tooltip-legend' data-layer='" + itemComposite.getLegendURL() + "' class='legend-layer' title='<p><b>Leyenda</b></p><img style=\"padding:0px 10px 10px 10px\" src=\"" + itemComposite.getLegendURL() + "\">'><img src='img/legend-icon.png' style='width:14px'></a></li>"; // Replace all "_" with a " "
 			
 	}
 }
