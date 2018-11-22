@@ -222,16 +222,9 @@ function getGeoserver(host, servicio, seccion, peso, nombre, version) {
 				placement: "right",
 				trigger: "hover",
 				container: "body",
-				html: true
+				html: true,
+				template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltip-inner-legend"></div></div>'
 			});
-			/*
-			$("[data-toggle2='tooltip-legend']").on('show.bs.tooltip', function(){
-			  //alert($(this).attr('data-layer'));
-			  var data_layer = $(this).attr('data-layer');
-			  //$(this).attr('title', '<img src="' + data_layer + '">');
-			  $(this).attr('title', 'xxxxxxxxxxx')
-			});
-			*/
 		}
 		
 		return;
