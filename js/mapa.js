@@ -11,11 +11,6 @@ var argenmap = L.tileLayer('http://wms.ign.gob.ar/geoserver/gwc/service/tms/1.0.
     attribution: atrib_ign
 });
 
-var argenmap_old = L.tileLayer('https://ide.ign.gob.ar/geoservicios/rest/services/Mapas_IGN/mapa_topografico/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 15,
-    attribution: atrib_ign
-});
-
 //Construye el mapa
 var mapa = L.map('mapa', {
     center: [-40, -59],
@@ -172,7 +167,7 @@ function getGeoserver(host, servicio, seccion, peso, nombre, version) {
 		
         // create an object with all layer info for each layer
         capas_info.each(function (index, b) {
-            var i = $(this); var iName = $('name', i).html(); var iTitle = $('title', i).html(); var iBoundingBox = $('boundingbox', i);
+            var i = $(this); var iName = $('name', i).html(); var iTitle = $('title', i).html(); var iBoundingBox = $('boundingbox', i);  var iAbstract = $('abstract', i).html();
             if (iBoundingBox[0].attributes.srs) {
                 var iSrs = iBoundingBox[0].attributes.srs;
             } else {
@@ -183,8 +178,8 @@ function getGeoserver(host, servicio, seccion, peso, nombre, version) {
             var iMinX = iBoundingBox[0].attributes.minx;
             var iMaxX = iBoundingBox[0].attributes.maxx;
             
-			var capa = new Capa(iName, iTitle, iSrs.nodeValue, host, servicio, iMinX.nodeValue, iMaxX.nodeValue, iMinY.nodeValue, iMaxY.nodeValue);
-			var item = new Item(capa.nombre, seccion+index, "", "", capa.titulo, capa);
+			var capa = new Capa(iName, iTitle, iSrs.nodeValue, host, servicio, version, iMinX.nodeValue, iMaxX.nodeValue, iMinY.nodeValue, iMaxY.nodeValue);
+			var item = new Item(capa.nombre, seccion+index, "", iAbstract, capa.titulo, capa);
 			item.setImpresor(impresorItem);
 			items.push(item);
         });
@@ -208,8 +203,25 @@ function getGeoserver(host, servicio, seccion, peso, nombre, version) {
 		gestorMenu.add(groupAux);
 		
 		getGeoserverCounter--;
-		if (getGeoserverCounter == 0) {
+		if (getGeoserverCounter == 0) { //Si ya cargó todas las capas solicitadas
+			//Ocultar loading
+			$(".loading").hide();
+			//Imprimir menú
 			gestorMenu.imprimir($(".nav.nav-sidebar"));
+			//Agregar tooltip resumen
+			$("[data-toggle2='tooltip']").tooltip({
+				placement: "right",
+				trigger: "hover",
+				container: "body"
+			});
+			//Agregar tooltip leyenda
+			$("[data-toggle2='tooltip-legend']").tooltip({
+				placement: "right",
+				trigger: "hover",
+				container: "body",
+				html: true,
+				template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner tooltip-inner-legend"></div></div>'
+			});
 		}
 		
 		return;

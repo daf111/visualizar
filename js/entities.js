@@ -4,18 +4,26 @@
 Class Capa
 ******************************************/
 class Capa {
-	constructor(nombre, titulo, srs, host, servicio, minx, maxx, miny, maxy, attribution) {
+	constructor(nombre, titulo, srs, host, servicio, version, minx, maxx, miny, maxy, attribution) {
 		this.nombre = nombre
 		this.titulo = titulo
 		this.srs = srs
 		this.host = host
 		this.servicio = servicio
+		this.version = version
 		this.minx = minx
 		this.maxx = maxx
 		this.miny = miny
 		this.maxy = maxy
 		this.attribution = attribution
 	}
+	
+	getLegendURL() {
+		return this.host + 
+			   '/ows?service=' + this.servicio + '&version=' + this.version + '&request=GetLegendGraphic&' +
+			   'format=image/png&layer=' + this.nombre;
+	}
+	
 }
 
 /******************************************
@@ -33,7 +41,8 @@ class ImpresorItemHTML extends Impresor {
 		var childId = itemComposite.getId();
 		
 		return "<li id='" + childId + "' class='capa list-group-item' onClick='gestorMenu.muestraCapa(\"" + childId + "\")'><a nombre=" + itemComposite.nombre +
-			" href='#'>" + (itemComposite.titulo ? itemComposite.titulo.replace(/_/g, " ") : "por favor ingrese un nombre") + "</a></li>"; // Replace all "_" with a " "
+			" href='#' data-toggle2='tooltip' title='" + itemComposite.descripcion + "'>" + (itemComposite.titulo ? itemComposite.titulo.replace(/_/g, " ") : "por favor ingrese un nombre") + "</a>" + 
+			" <a href='#' data-toggle2='tooltip-legend' data-layer='" + itemComposite.getLegendURL() + "' class='legend-layer' title='<p><b>Leyenda</b></p><img style=\"padding:0px 10px 10px 10px\" src=\"" + itemComposite.getLegendURL() + "\">'><img src='img/legend-icon.png' style='width:14px'></a></li>"; // Replace all "_" with a " "
 			
 	}
 }
@@ -44,9 +53,9 @@ class ImpresorGrupoHTML extends Impresor {
 		var listaId = itemComposite.getId();
 		var itemClass = 'menu5';
 		
-		return "<div id='" + listaId + "' class='" + itemClass + " panel-heading' title='" + itemComposite.descripcion + "' >" +
+		return "<div id='" + listaId + "' class='" + itemClass + " panel-heading' >" +
 			"<div class='panel-title'>" +
-			"<a data-toggle='collapse' id='" + listaId + "-a' href='#" + itemComposite.seccion + "'>" + itemComposite.nombre + "</a></div>" +
+			"<a data-toggle='collapse' data-toggle2='tooltip' title='" + itemComposite.descripcion + "' id='" + listaId + "-a' href='#" + itemComposite.seccion + "'>" + itemComposite.nombre + "</a></div>" +
 			"<div id='" + itemComposite.seccion + "' class='panel-collapse collapse'><ul class='list-group nav-sidebar'>" + itemComposite.itemsStr + "</ul></div></div>";
 		
 	}
@@ -70,6 +79,10 @@ class ItemComposite {
 
 	imprimir() {
 		return this.impresor.imprimir(this);
+	}
+	
+	getLegendURL() {
+		return '';
 	}
 }
 
@@ -129,7 +142,6 @@ class ItemGroup extends ItemComposite {
 		} else {
 			$("#" + this.getId() + "-a").html(this.nombre)
 		}
-		console.log($("#" + this.getId() + "-a").html());
 	}
 }
 
@@ -140,13 +152,16 @@ class Item extends ItemComposite {
 		this.capa = capa;
 		this.visible = false;
 	}
+	
 	getId() {
 		var childId = "child-" + this.seccion;
 		return childId;
 	}
+	
 	getVisible() {
 		return this.visible;
 	}
+	
 	showHide(callback) {
 		$('#' + this.getId()).toggleClass('active');
 		if (typeof callback === "function") {
@@ -158,6 +173,11 @@ class Item extends ItemComposite {
 		}
 		this.visible = !this.visible;
 	}
+	
+	getLegendURL() {
+		return this.capa.getLegendURL();
+	}
+	
 }
 
 /******************************************
